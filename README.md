@@ -11,11 +11,11 @@ The technology we use to send messages (communicate) between the server and the 
 When the user performs certain actions in the website, for example adding/moving/deleting nodes, a query is sent to the `server-side`. The **query** format we follow right now is really simple, for example:
 
 Format: `Latitude_A Longitude_A Latitude_B Longitude_B`<br>
-Example: `38.0006436 23.7786841 38.0022161 23.7793064`
+Example query: `38.0006436 23.7786841 38.0022161 23.7793064`
 
-The message we send to the client as a **response** from the c++ application after the shortest path algorithm is computed, is the **nodes sequence of the shortest path**. The message the user receives has the same format as the query, only this time we have a lot more nodes, each 2 adjacent nodes basically represent an edge in the shortest path. For example here is a **response** from the server.
+The message we send to the client as a **response** from the c++ application after the shortest path algorithm is computed, is the **nodes sequence of the shortest path**. The message which the user receives has the same format as the query, only this time we have a lot more nodes, each 2 adjacent nodes basically represent an edge in the shortest path. For example here is a **response** from the server.
 
-Example: `38.0006897 23.7785669 38.0007352 23.7785848 38.0009246 23.7786363 38.0012873 23.7786724 38.0013635 23.7793300 38.0017295 23.7791770 38.0019797 23.7790311 38.0022526 23.7792636`
+Example shortest path response: `38.0006897 23.7785669 38.0007352 23.7785848 38.0009246 23.7786363 38.0012873 23.7786724 38.0013635 23.7793300 38.0017295 23.7791770 38.0019797 23.7790311 38.0022526 23.7792636`
 
 # Computing the shortest path
 
