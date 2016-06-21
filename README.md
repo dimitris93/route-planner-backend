@@ -43,7 +43,7 @@ All graph data are stored in-memory. We use Adjacecy-Lists. Which means that we 
 
 ## KD-Tree implementation
 
-The KD-Tree is a binary tree. In our application we only save the `node_id` on our KD-Tree, because we already have an array of `coordinates` that is indexed with `node_ids` and gives us a `LatLng` object for a node. Also, because KD-Tree is a binary tree, we can store it in memory as an array and thus saving memory.
+The KD-Tree is a binary tree. In our application we only save the `node_id` on our KD-Tree, because we already have an array of `coordinates` that is indexed with `node_ids` and can give us the node's `LatLng` information. Also, because KD-Tree is a binary tree, we can store it in memory as an array and thus saving memory.
 
 ![4](https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Binary_tree_in_array.svg/450px-Binary_tree_in_array.svg.png)
 
