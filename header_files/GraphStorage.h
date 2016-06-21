@@ -105,8 +105,7 @@ public:
                                  bool double_way,
                                  bool is_startpoint);                // Add edge (u,v) with w weight
     void                 CreateKDTree();                             // Create KD Tree from the coordinates
-    void                 FindConnectedComponents();                  // Create KD Tree from the coordinates
-    void                 ComputeContractionHierarchies();            // Create KD Tree from the coordinates
+    void                 FindConnectedComponents();                  // Find connected components in the graph
     const LatLng         &GetCoordinate(int node_id) const;          // Get the latitude,longitude of a node
     NearestEdgeInfo      GetNearestEdge(const LatLng &source,
                                         const double &radius) const; // Nearest edge from coordinate
