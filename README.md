@@ -29,7 +29,7 @@ We keep performing  `radius-search` in our **KD-Tree** in wider and wider circle
 
 ## Query graph
 
-Then, we take the projection (always on edge) of the user's node to the nearest edge we just calculated. This way we will find a point on the nearest edge. That point will be added to what we call `query graph` as a `virtual node`. For example:
+The projection of the user's given coordinate to the nearest edge we just calculated is a point on the nearest edge. That point will be added to what we call `query graph` as a `virtual node`. For example:
 
 ![2](https://i.gyazo.com/f804092e638dd6884ef84ef926161993.png)
 
