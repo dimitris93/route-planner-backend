@@ -17,7 +17,7 @@ The message we send to the client as a **response** from the c++ application aft
 
 Example: `38.0006897 23.7785669 38.0007352 23.7785848 38.0009246 23.7786363 38.0012873 23.7786724 38.0013635 23.7793300 38.0017295 23.7791770 38.0019797 23.7790311 38.0022526 23.7792636`
 
-# Shortest path procedure
+# Computing the shortest path
 
 ## Finding nearest edges, from user's given coordinates
 
