@@ -31,6 +31,12 @@ We keep performing  `radius-search` in our KD-Tree in wider and wider circles fr
 
 Then, we take the projection (always on edge) of the user's node to the nearest edge we just calculated. This way we will find a point on the nearest edge. That point will be added to what we call `query graph` as a `virtual node`. For example:
 
-[!2](https://i.gyazo.com/f804092e638dd6884ef84ef926161993.png)
+![2](https://i.gyazo.com/f804092e638dd6884ef84ef926161993.png)
 
-In the example above, we added 2 `virtual nodes` (black circles) and 8 `virtual directed edges` (red arrows). This way, our shortest path algorithm will actually consider both ways of the road, since it happened so that both of those ways were double-ways. The query graph, is the graph on which the shortest path is actually performed on. It is our original graph, with a few `virtual nodes` and `virtual directed edges` if necessary.
+In the example above, we added 2 `virtual nodes` (black circles) and 8 `virtual directed edges` (red arrows). This way, our shortest path algorithm will actually consider both ways of the road, since it so happened in this example that both of those ways were double-ways. The query graph, is the graph on which the shortest path is actually performed on. It is our original graph, with a few more `virtual nodes` and `virtual directed edges` if necessary.
+
+## Graph representation
+
+All graph data are stored in-memory. We use Adjacecy-Lists. Which means that we have a big array that is indexed with `my_ids` which are integers from 0 to N. The `i-element` of that array simply contains all the edges that **start or end** on the node `i`. If the edge starts with `i`, then we have a forward edge. If it ended with `i` we have a backward edge. We also have a third "flag" which represents `double edges`. This is important because marking `double edges` with a special flag, instead of adding 2 different edges only costs us half the memory. Remember that we want to be able to access both forward and backward edges. This is required in shortest path algorithms such as Bidirectional-Dijkstra.
+
+![3](https://i.gyazo.com/515ec7ebbda21eb34e71fe6197fb8d8f.png)
