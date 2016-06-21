@@ -4,7 +4,7 @@ This is the core of our routing engine. This is the application that calculates 
 
 We receive queries (sequence of coordinates) from the user, we then compute the shortest path and send the response (the shortest path as a sequence of coordinates) back to the user.
 
-## Query and response format
+## Query and Response message format
 
 The technology we use to send messages (communicate) between the server and the client is Websockets, since that technology is built-in Javascript. However, for our C++ application, that technology is not built-in. At least not in an easy cross-platform way for windows and linux. This is the reason why we use a (headers-only) framework called [Websocketpp](https://github.com/zaphoyd/websocketpp). This is atually the only framework we use for the server-side.
 
