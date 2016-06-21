@@ -33,7 +33,7 @@ Then, we take the projection (always on edge) of the user's node to the nearest 
 
 ![2](https://i.gyazo.com/f804092e638dd6884ef84ef926161993.png)
 
-In the example above, we added 2 `virtual nodes` (black circles) and 8 `virtual directed edges` (red arrows). This way, our shortest path algorithm will actually consider both ways of the road, since it so happened in this example that both of those ways were double-ways. The query graph, is the graph on which the shortest path is actually performed on. It is our original graph, with a few more `virtual nodes` and `virtual directed edges` if necessary.
+In the example above, we added 2 `virtual nodes` (black circles) and 8 `virtual directed edges` (red arrows). This way, our shortest path algorithm will actually consider both ways of the road, since it so happened in this example that both of those ways were double-ways. The query graph, is the graph on which the shortest path is actually performed on. It is essentially our original graph, plus few more `virtual nodes` and `virtual directed edges`.
 
 ## Graph representation
 
