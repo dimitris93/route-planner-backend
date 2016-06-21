@@ -6,7 +6,7 @@ We receive queries (sequence of coordinates) from the user, we then compute the 
 
 ## Query and Response message format
 
-The technology we use to send messages (communicate) between the server and the client is Websockets, since that technology is built-in Javascript. However, for our C++ application, that technology is not built-in. At least not in an easy cross-platform way for windows and linux. This is the reason why we use a (headers-only) framework called [Websocketpp](https://github.com/zaphoyd/websocketpp). This is atually the only framework we use for the server-side.
+The technology we use to send messages (communicate) between the server and the client is Websockets, since that technology is built-in Javascript. However, for our C++ application, that technology is not built-in. At least not in an easy cross-platform way for windows and linux. This is the reason why we use a (headers-only) framework called [Websocketpp](https://github.com/zaphoyd/websocketpp). This is actually the only framework we use for the server-side.
 
 When the user performs certain actions in the website, for example adding/moving/deleting nodes, a query is sent to the `server-side`. The **query** format we follow right now is really simple, for example:
 
