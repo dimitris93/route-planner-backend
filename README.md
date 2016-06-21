@@ -51,7 +51,7 @@ When creating the KD-Tree, we use the efficient KD-Tree creation method, which h
 
 ## Latitude Longitude coordinates
 
-Another trick to reduce memory is to store the world coordinates as integers. The `.osm` data provide [accuracy to 7 decimal places](http://wiki.openstreetmap.org/wiki/Node). Latitude takes values from -90 to +90, and Longitude takes values from -180 to +180. That means that this value can be stored as an integer. In the worst case, we would have to "compress" the Longitude value 180, which would be equal to 180 * 10.000.000 = 1.800.000.000 and it fits on a 4-byte integer perfectly. 
+Another trick to reduce memory is to store the world coordinates as integers. The `.osm` data provide [accuracy to 7 decimal places](http://wiki.openstreetmap.org/wiki/Node), which translates to cm-accurancy. Latitude takes values from -90 to +90, and Longitude takes values from -180 to +180. That means that this value can be stored as an integer. In the worst case, we would have to "compress" the Longitude value 180, which would be equal to 180 * 10.000.000 = 1.800.000.000 and it fits on a 4-byte integer perfectly. 
 
 If we opt for float (also 4-byte) we would lose accuracy because floats are accurate to about [5 decimal places](https://en.wikipedia.org/wiki/Single-precision_floating-point_format).
 
