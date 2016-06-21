@@ -41,6 +41,24 @@ All graph data are stored in-memory. We use Adjacecy-Lists. Which means that we 
 
 ![3](https://i.gyazo.com/515ec7ebbda21eb34e71fe6197fb8d8f.png)
 
+## KD-Tree implementation
+
+The KD-Tree is a binary tree. In our application we only save the `node_id` on our KD-Tree, because we already have an array of `coordinates` that is indexed with `node_ids` and gives us a `LatLng` object for a node. Also, because KD-Tree is a binary tree, we can store it in memory as an array and thus saving memory.
+
+Also, when creating the KD-Tree, we use the effecient KD-Tree creation method, which has a O(kn log n) time complexity, and create a **balanced** binary tree. This is possible because our data are static and also we never add or remove nodes on run-time. [This](http://jcgt.org/published/0004/01/03/paper.pdf) is the paper that I followed to create the KD-Tree effeciently.
+
+![4](https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Binary_tree_in_array.svg/450px-Binary_tree_in_array.svg.png)
+
+## Latitude Longitude coordinates
+
+Another trick to reduce memory is to store the world coordinates as integers. The `.osm` data provide accurancy to 7 decimal places. Latitude takes values from -90 to +90, and Longitude takes values from -180 to +180. That means that this value can be stored as an integer. In the worst case, we would have to "compress" the Longitude value 180, which would be equal to 180 * 10.000.000 = 1.800.000.000 and it fits on a 4-byte integer perfectly. 
+
+If we opt for float (also 4-byte) we would lose accurancy because floats are accurate to about [5 decimal places](https://en.wikipedia.org/wiki/Single-precision_floating-point_format).
+
+## Connected components labeling 
+
+A quick way to determine if a shortest path does not exist before we even start the shortest path algorithm is [connected components labeling](Connected-component labeling). When the graph data are loaded in memory, we can perform an algorithm that will label each node with an id, so that if node `x` and node `y` have the same label, then they belong in the same `connected component. Now, that does not necessarily mean that the path exists, but if 2 nodes belong in 2 different connected components, then the shortest path does not exists. This method is important to implement because without it, if we performed a shortest path from 2 isolated islands, then the shortest path algorithm would end up searching many nodes before it is able to detect that the shortest path (or any path) does not exist.
+
 ## Shortest path algorithm and Future work
 
 For the shortest path algorithm we are currently using a simply Bidirectional Dijkstra. This can be improved immensly with the method of [Contraction Hierarchies](https://en.wikipedia.org/wiki/Contraction_hierarchies). [Here](http://algo2.iti.kit.edu/schultes/hwy/contract.pdf) is a great paper and [here](https://algo2.iti.kit.edu/download/presentation.pdf) is a presentation. Luckily, we have already implemented Bidirectional-Dijkstra. All we have to do to implement this method in our application would be to modify our `AdjElement` so that they contain a `middle_node` which will help us unravel the shortcut-edges into actual edges that will be drawn on the map, then add a method that will add shortcut edges in our graph and finally slightly modify our Bidirectional Dijkstra algorithm so that it relaxes edges only to higher priority.
