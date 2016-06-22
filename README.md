@@ -55,7 +55,7 @@ Another trick to reduce memory is to store the world coordinates as integers. Th
 
 If we opted for float (also 4-byte) we would lose accuracy because floats are accurate to about [5 decimal places](https://en.wikipedia.org/wiki/Single-precision_floating-point_format).
 
-If we opted for double (8-byte) we would spend twice the memory and we would have gain only a tiny bit of faster operations between `LatLngs` because of the fact that we wouldn't have to "convert" the latitude and longitude values from integers to doubles. I should also note that some operations, for example comparison, doesn't even require this "convertion".
+If we opted for double (8-byte) we would spend twice the memory and we would gain only a tiny bit faster operations between `LatLngs` because of the fact that we wouldn't have to "convert" the latitude and longitude values from integers to doubles (by multiplying or dividing by 10.000.000). I should also note that some operations, for example comparison, don't even require this "convertion".
 
 ## Connected components labeling 
 
