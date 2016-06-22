@@ -47,7 +47,7 @@ The KD-Tree is a binary tree. In our application we only save the `node_id` on o
 
 ![4](https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Binary_tree_in_array.svg/450px-Binary_tree_in_array.svg.png)
 
-When creating the KD-Tree, we use the efficient KD-Tree creation method, which has a O(kn log n) time complexity, and create a **balanced** binary tree. This is possible because our data are static and also we never add or remove nodes on run-time. [This](http://jcgt.org/published/0004/01/03/paper.pdf) is the paper that I followed to create the KD-Tree efficiently.
+When creating the KD-Tree, we use the efficient KD-Tree creation method, which has **O(kn log n)** time complexity, and create a **balanced** binary tree. This is possible because our data are static and also we never add or remove nodes on run-time. [This](http://jcgt.org/published/0004/01/03/paper.pdf) is the paper that I followed to create the KD-Tree efficiently.
 
 ## Latitude Longitude coordinates
 
