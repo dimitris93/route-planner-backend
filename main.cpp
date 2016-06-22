@@ -3,7 +3,7 @@
 #include "Server.h"
 #include "Util.h"
 
-// g++ -std=c++11 server.cpp ShortestPath/ShortestPath.cpp GraphStorage/AdjListElement.cpp GraphStorage/GraphStorage.cpp GraphStorage/LatLng.cpp KDTree/KDTree.cpp PQ/IndexPriorityQueue.cpp Util/Util.cpp -o server_exe -I./ -lboost_system
+// g++ -std=c++11 main.cpp source_files/*.cpp -o server_exe -I./header_files -lboost_system
 int main(int argc, char *argv[])
 {
     chrono::time_point<chrono::high_resolution_clock> t0 = chrono::high_resolution_clock::now();
