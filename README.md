@@ -65,6 +65,6 @@ When implementing the connected components labeling algorithm, it is important t
 
 If the number of connected components is less than `65535` then it is better to use an `unsigned short` to reduce the memory consumpion to half (as opposed to `unsigned integer`).
 
-## Shortest path algorithm and Future work
+## Future work
 
 For the shortest path algorithm we are currently using Bidirectional Dijkstra. This can be improved immensely with the method of [Contraction Hierarchies](https://en.wikipedia.org/wiki/Contraction_hierarchies). [Here](http://algo2.iti.kit.edu/schultes/hwy/contract.pdf) is a great paper and [here](https://algo2.iti.kit.edu/download/presentation.pdf) is a presentation that explains the method in detail. Fortunately, we have already implemented Bidirectional-Dijkstra. All we have to do to add this method in our application is to modify our `AdjElement` class so that it contains another property, the `middle_node`, which will help us unravel the shortcut-edges into the actual edges that we will show on the map. Then, we need to add a method that will add the shortcut edges in our graph, and finally, slightly modify our Bidirectional Dijkstra algorithm so that it relaxes edges only higher priority nodes in the forward search and lower priority nodes in the backward search.
