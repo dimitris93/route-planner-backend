@@ -27,6 +27,8 @@ To find the nearest edge for each of the user's given coordinates we make use of
 
 We keep performing `radius-search` in our **KD-Tree** in wider and wider circles (radius) from the user's given coordinate, until we find a collection of one or more nodes in this manner. For each node `u` of that collection, we look in our graph's edges (more info about the graph in-memory storage [below](#graph-representation)) and find every edge that starts or ends (our graph representation allows us to look into the graph backwards as well) in `u`. This will result in getting a `set` of edges. Because we search in a radius of 250 or more, and the longest edge of the entire graph is 250, it is guaranteed that the nearest edge, is included in that `set` on edges. Otherwise, if we searched in a radius less than 250, we would ran into [this problem](http://stackoverflow.com/questions/19892564/find-nearest-edge-in-graph). For each edge in that set, we then calculate the distance from point (user's given coordinate) the the edge. The nearest distance will give us the nearest edge. 
 
+This whole process takes only a couple of milliseconds on less than average hardware. So it is very effecient, and also, memory usage is the absolute bare minimum (1 array of integers for the KD-Tree).
+
 ## Query graph
 
 The projection of the user's given coordinate to the nearest edge we just calculated is a point on the nearest edge. That point will be added to what we call `query graph` as a `virtual node`. For example:
