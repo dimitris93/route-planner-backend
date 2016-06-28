@@ -122,13 +122,6 @@ private:
                            vector<_pair>,
                            function<bool(const _pair &, const _pair &)>> PQ;
 
-    void update_ch_priorities(int v,
-                              float a, float b,
-                              PQ &pq,
-                              vector<float> &priorities,
-                              vector<int> &old_to_new_id,
-                              bool initialize_priority);             // Update the pririties for Contraction Hierarchies
-
     KDTree                         kd_tree;                          // The KD Tree that contains node_ids
     vector<LatLng>                 coordinates;                      // The coordinates, indexed with node_ID
     vector<vector<AdjListElement>> adjacency_lists;                  // Contains the forward edges information
