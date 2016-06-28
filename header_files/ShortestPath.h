@@ -17,10 +17,6 @@ public:
         Bidirectional_Dijkstra
     };
 
-    ShortestPath(int s, int ignore_node,
-                 float  uv_cost,
-                 vector<AdjacentEdge> &targets,
-                 const vector<vector<AdjListElement>> &adjacency_lists);
     ShortestPath(const QueryGraph &queryG,
                  vector<int> &shortest_path,
                  float &path_cost,
