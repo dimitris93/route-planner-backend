@@ -15,8 +15,8 @@ include_directories(${Boost_INCLUDE_DIR})
 # These libraries are used for the server/client communication from the 'websocketpp' header only library
 link_libraries(ws2_32 wsock32)
 
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3") # release
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") # debug
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -O3") # flags for release
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17") # flags for debug
 set(CMAKE_EXE_LINKER_FLAGS -static)   # static linking
 
 # Add our source files

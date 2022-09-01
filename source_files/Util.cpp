@@ -16,9 +16,9 @@ vector<string> Util::Tokenize(const string& str, const string& delim)
 	return tokens;
 }
 
-string Util::DoubleToString(const double& num, const int& decimals)
+string Util::DoubleToString(const double& d, int precision)
 {
-	ostringstream out;
-	out << fixed << setprecision(decimals) << num;
-	return out.str();
+	ostringstream ss;
+	ss << std::setprecision(precision) << d;
+	return ss.str();
 }

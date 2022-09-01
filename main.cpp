@@ -3,20 +3,15 @@
 
 int main(int argc, char* argv[])
 {
-	//	vector<string> asd(Util::Tokenize("asd1 asd2 asd3", " "));
-
-//	string s("tokenA tok2 tknC");
-//	string delim(" ");
-
-	vector<string> tokens(Util::Tokenize("tokenA tok2 tknC", " "));
-
-	Util::PrintVector<string>(tokens);
-
-	//	Util::print_vector(Util::Tokenize("asd1 asd2 asd3", " "));
+	cout << LatLng::ClosestPointToLineSegment(LatLng(4, 7),
+											  LatLng(2, 3),
+											  LatLng(6, 5))
+					.ToString()
+		 << endl;
 }
 
-int f()
 //int main(int argc, char* argv[])
+int f()
 {
 	chrono::time_point<chrono::high_resolution_clock> t0 = chrono::high_resolution_clock::now();
 

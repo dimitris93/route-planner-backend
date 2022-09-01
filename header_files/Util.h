@@ -1,6 +1,7 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <cmath>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -16,8 +17,8 @@ public:
 	static vector<string> Tokenize(const string& str,
 								   const string& delim = " ");   // Returns a vector with the tokens
 																 //	template<typename T> static void PrintVector(const vector<T>& vec);     // Prints vector
-	static string DoubleToString(const double& num,
-								 const int&    decimals = 7);   // specified number of decimal digits
+	static string DoubleToString(const double& d,                // Convert double as string, with target precision
+								 int           precision = 15);  // 15 is the precision that is guaranteed by "double".
 
 	// Print vector of type T
 	template<typename T> static void PrintVector(const vector<T>& vec)

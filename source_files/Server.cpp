@@ -135,7 +135,7 @@ void Server::OnMessage(connection_handler conn_hdl, message_ptr msg_ptr)
     string   path_string;
     // For every coordinate
     for (int i       = 0; i < path_coordinates.size(); ++i)
-        path_string += path_coordinates[i].toString() + " ";
+        path_string += path_coordinates[i].ToString() + " ";
     path_string.pop_back(); // remove last space
 
 

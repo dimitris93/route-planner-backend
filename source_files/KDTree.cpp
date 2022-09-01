@@ -236,8 +236,8 @@ int KDTree::NNSearch(const LatLng &target) const
 {
     int          best_node  = -1;
     double       best_dist  = numeric_limits<double>::max();
-    const double target_lat = target.getLat();
-    const double target_lng = target.getLng();
+    const double target_lat = target.GetLat();
+    const double target_lng = target.GetLng();
     NNSearchRecursive(target_lat, target_lng,
                       0, best_node, best_dist);
     return best_node;
@@ -246,8 +246,8 @@ int KDTree::NNSearch(const LatLng &target) const
 vector<int> KDTree::RadiusSearch(const LatLng &source, const double &radius) const
 {
     vector<int>  nodes;
-    const double source_lat = source.getLat();
-    const double source_lng = source.getLng();
+    const double source_lat = source.GetLat();
+    const double source_lng = source.GetLng();
     RadiusSearchRecursive(source_lat, source_lng, radius, 0, nodes);
     return nodes;
 }
@@ -261,8 +261,8 @@ void KDTree::NNSearchRecursive(const double &target_lat, const double &target_ln
         return;
 
     const LatLng &current_point   = coordinates[current_node];
-    const double current_lat      = current_point.getLat();
-    const double current_lng      = current_point.getLng();
+    const double current_lat      = current_point.GetLat();
+    const double current_lng      = current_point.GetLng();
     const double current_distance = LatLng::DistanceInMeters(current_lat, current_lng, target_lat, target_lng);
 
     // If the current location is better than the best known location,
@@ -334,8 +334,8 @@ void KDTree::RadiusSearchRecursive(const double &source_lat, const double &sourc
         return;
 
     const LatLng &current_point   = coordinates[current_node];
-    const double current_lat      = current_point.getLat();
-    const double current_lng      = current_point.getLng();
+    const double current_lat      = current_point.GetLat();
+    const double current_lng      = current_point.GetLng();
     const double current_distance = LatLng::DistanceInMeters(current_lat, current_lng, source_lat, source_lng);
 
     // If the current location is inside the circle
