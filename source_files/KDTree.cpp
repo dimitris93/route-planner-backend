@@ -1,8 +1,9 @@
 #include "KDTree.h"
 #include <algorithm>
 #include <iostream>
-
-using namespace std;
+#include <cmath>
+#include <limits>
+#include <numeric>
 
 KDTree::KDTree(const vector<LatLng> &coordinates) :
     coordinates(coordinates)

@@ -119,7 +119,7 @@ NearestEdgeInfo GraphStorage::GetNearestEdge(const LatLng &source, const double 
         return current_best;
     }
 
-    // Find nearest edge
+    // Find the nearest edge
     const double    source_lat    = source.getLat();
     const double    source_lng    = source.getLng();
     double          best_distance = numeric_limits<double>::max();
@@ -132,7 +132,7 @@ NearestEdgeInfo GraphStorage::GetNearestEdge(const LatLng &source, const double 
                                                                        coordinates[e.u], coordinates[e.v]);
         const double current_distance = LatLng::DistanceInMeters(source_lat, source_lng,
                                                                  projected_point.getLat(), projected_point.getLng());
-        // Update nearest edge information
+        // Update the nearest edge information
         if (current_distance < best_distance)
         {
             best_distance = current_distance;

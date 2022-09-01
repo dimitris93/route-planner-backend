@@ -1,3 +1,4 @@
+#include <limits>
 #include "GraphStorage.h"
 
 class QueryGraph
