@@ -8,22 +8,12 @@ Route RoutePlanner::plan_route(unsigned int s,
 							   const Graph& G,
 							   Algorithm    algorithm)
 {
-	vector<unsigned int> shortest_path;
-	float                path_cost;
-
 	switch (algorithm)
 	{
 		case Dijkstra:
 		{
-			// s->s path is simply {s} and it has 0 cost
-			if (s == t)
-			{
-				shortest_path.push_back(s);
-				return Route(shortest_path, path_cost);
-			}
-
-			unordered_map<unsigned int, float>        dist;   // dist[u] is the distance of the shortest s->u path
-			unordered_map<unsigned int, unsigned int> prev;   // prev[u] is the node before u in the shortest s->u path
+			unordered_map<unsigned int, float>        dist;   // dist[u] 'will be' the distance of the shortest s->u path
+			unordered_map<unsigned int, unsigned int> prev;   // prev[x] 'will be' the node before x in the shortest s->u path, via x
 			using ui_f = pair<unsigned int, float>;
 			priority_queue<ui_f,
 						   vector<ui_f>,
@@ -32,82 +22,69 @@ Route RoutePlanner::plan_route(unsigned int s,
 						return p1.second > p2.second;
 					});
 
-			dist.insert(make_pair(s, 0));   // set distance of s->s path to 0
-			pq.push(make_pair(s, 0));       // add s to pq
+			dist[s] = 0;                // set distance of s->s path to 0
+			pq.push(make_pair(s, 0));   // add s to pq
 
 			// While our priority queue is not empty
 			while (!pq.empty())
 			{
-				// Lazy deletion
-				int   u = -1;
-				float dist_to_u;
-				while (!pq.empty())
+				const auto&        top = pq.top();
+				const unsigned int u   = top.first;
+				const float        w   = top.second;
+
+				// Nodes can be added more than once in the priority queue.
+				// We need to remove them by checking if they are up-to-date.
+				// This is common for Dijkstra implementations.
+				if (w > dist[u])
 				{
-					const auto& top = pq.top();
-					dist_to_u       = dist[top.first];
-					if (top.second == dist_to_u)   // good value
-					{
-						u = top.first;
-						pq.pop();
-						break;
-					}
 					pq.pop();
+					continue;
 				}
-				if (u == -1)
+
+				pq.pop();
+
+				// When t is popped, the shortest path s->t is computed.
+				if (pq.top().first == t)
 					break;
 
-				// Stop the algorithm because the shortest s->t path is found, since the vertex t was popped
-				if (u == t)
-					break;
-
-				// For every outgoing (u,v) edge
 				for (const auto& e : G.GetForwardEdges(u))
 				{
-					const unsigned int v = e.v;
-					const float        w = e.w;
-
-					// Relax edge (u,v)
-					const float length    = dist_to_u + w;
-					const auto  find_v    = dist.find(v);
-					const bool  not_found = find_v == dist.end();
-					// If dist_to[v] has not yet been set or length < dist_to[v]
-					if (not_found || length < find_v->second)
+					const float len    = dist[u] + e.w;
+					const auto  find_v = dist.find(e.v);
+					// If dist[v] is Infinite, or dist[u] + e.w < dist[v]
+					if (find_v == dist.end() || len < find_v->second)
 					{
-						if (not_found)
-							dist.insert(make_pair(v, length));   // set dist_to[v]
-						else
-							find_v->second = length;     // update dist_to[v]
-						pq.push(make_pair(v, length));   // update priority (requires lazy deletion to double pairs)
-						prev[v] = u;                     // update previous_node[v]
+						dist[e.v] = len;
+						prev[e.v] = u;
+						pq.push(make_pair(e.v, len));   // The same node can be added twice. We need to check if the value is up-to-date
 					}
 				}
 			}
 
 			// If there is no s->t path
-			// Update path_cost
-			const auto find_t = dist.find(t);
+			const auto& find_t = dist.find(t);
 			if (find_t == dist.end())
 			{
-				path_cost = numeric_limits<float>::max();
-				return Route(shortest_path, path_cost);
+				return Route(vector<unsigned int>(),
+							 numeric_limits<float>::max());
 			}
 
-			// Update path_cost
-			path_cost = find_t->second;
-
 			// Calculate the path vector
-			shortest_path.push_back(t);            // add last vertex
-			for (int p = t; (p = prev[p]) != s;)   // keep getting the previous vertex
+			vector<unsigned int> shortest_path;
+			unsigned int         p = t;
+			do
+			{
 				shortest_path.push_back(p);
+				p = prev[p];
+			} while (p != s);
 			shortest_path.push_back(s);                            // add first vertex
 			reverse(shortest_path.begin(), shortest_path.end());   // reverse the vector
 
-			cout << shortest_path.size() << endl;
-			return Route(shortest_path, path_cost);
+			return Route(shortest_path, dist[t]);
 		}
 		case Bidirectional_Dijkstra:
 		{
-			return Route(shortest_path, path_cost);
+			return Route(vector<unsigned int>(), 0);
 		}
 	}
 }

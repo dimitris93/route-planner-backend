@@ -9,7 +9,7 @@ enum EdgeType
 {
 	FORWARD_EDGE,
 	BACKWARD_EDGE,
-	DOUBLE_WAY_EDGE
+	DOUBLE_WAY_EDGE   // double edges need to have the same w on both sides
 };
 
 class Node

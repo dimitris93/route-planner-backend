@@ -49,23 +49,28 @@ void Graph::AddEdge(unsigned int u,
 
 	adjacent_edges_vec.resize(nodes.size());
 
-	if (edge_type == EdgeType::FORWARD_EDGE ||
-		edge_type == EdgeType::DOUBLE_WAY_EDGE)
+	if (edge_type == EdgeType::DOUBLE_WAY_EDGE)
 	{
-
 		adjacent_edges_vec[u].emplace_back(v,
 										   w,
 										   edge_type,
 										   is_startpoint);
-	}
-
-	if (edge_type == EdgeType::BACKWARD_EDGE ||
-		edge_type == EdgeType::DOUBLE_WAY_EDGE)
-	{
-
 		adjacent_edges_vec[v].emplace_back(u,
 										   w,
 										   edge_type,
+										   is_startpoint);
+	}
+	else
+	{
+		auto const opposite_edge_type =
+				edge_type == EdgeType::FORWARD_EDGE ? EdgeType::BACKWARD_EDGE : EdgeType::FORWARD_EDGE;
+		adjacent_edges_vec[u].emplace_back(v,
+										   w,
+										   edge_type,
+										   is_startpoint);
+		adjacent_edges_vec[v].emplace_back(u,
+										   w,
+										   opposite_edge_type,
 										   is_startpoint);
 	}
 }
