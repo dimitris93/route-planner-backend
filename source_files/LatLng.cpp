@@ -1,5 +1,4 @@
 #include "LatLng.h"
-#include "Util.h"
 
 LatLng::LatLng() :
 	lat_int(0),
@@ -25,10 +24,6 @@ LatLng::LatLng(const double& lat, const double& lng) :
 			 << Util::DoubleToString(lng) << " }." << endl;
 		exit(-1);
 	}
-}
-
-LatLng::~LatLng()
-{
 }
 
 double LatLng::GetLat() const

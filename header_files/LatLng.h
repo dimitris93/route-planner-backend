@@ -1,7 +1,7 @@
 #ifndef LATLNG_H
 #define LATLNG_H
 
-#include <string>
+#include "Util.h"
 
 using namespace std;
 
@@ -18,7 +18,6 @@ public:
 	LatLng();
 	LatLng(const string& lat, const string& lng);
 	LatLng(const double& lat, const double& lng);
-	~LatLng();
 
 	double        GetLat() const;                               // Actual Latitude value as double
 	double        GetLng() const;                               // Actual Longitude value as double

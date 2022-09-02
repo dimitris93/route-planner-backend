@@ -27,7 +27,7 @@ AlwaysBreakAfterReturnType: None
 AlwaysBreakTemplateDeclarations: No
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterCaseLabel: false
+  AfterCaseLabel: true
   AfterClass: true
   AfterControlStatement: Always
   AfterEnum: true
@@ -46,7 +46,7 @@ BreakInheritanceList: AfterColon
 CompactNamespaces: false
 #
 ContinuationIndentWidth: 8
-IndentCaseLabels: false
+IndentCaseLabels: true
 IndentPPDirectives: AfterHash
 IndentWidth: 4
 KeepEmptyLinesAtTheStartOfBlocks: true
