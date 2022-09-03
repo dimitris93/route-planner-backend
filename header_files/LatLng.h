@@ -22,8 +22,8 @@ public:
 	double        GetLat() const;                               // Actual Latitude value as double
 	double        GetLng() const;                               // Actual Longitude value as double
 	static LatLng ClosestPointToLineSegment(const LatLng& p,    // Project point to road segment.
-											const LatLng& A,    // Returns the clamp ratio
-											const LatLng& B);   // and the projected point
+											const LatLng& A,    // Returns the projected point
+											const LatLng& B);   
 	static double DistanceInMeters(const double& lat1,
 								   const double& lng1,
 								   const double& lat2,

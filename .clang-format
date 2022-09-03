@@ -56,7 +56,7 @@ NamespaceIndentation: All
 ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: false
 PointerAlignment: Left
-ReflowComments: false
+ReflowComments: true
 SpaceAfterCStyleCast: false
 SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false

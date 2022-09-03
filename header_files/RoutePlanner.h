@@ -1,5 +1,5 @@
-#ifndef SHORTESTPATH_H
-#define SHORTESTPATH_H
+#ifndef ROUTEPLANNER_H
+#define ROUTEPLANNER_H
 
 #include "Graph.h"
 
@@ -15,15 +15,13 @@
 class Route
 {
 public:
+	Route();
 	Route(vector<unsigned int> nodeid_sequence,
-		  float                cost) :
-		nodeid_sequence(std::move(nodeid_sequence)),
-		cost(cost)
-	{
-	}
+		  float                cost);
 
-	vector<unsigned int> nodeid_sequence;   // as a sequence of coordinate ids
-	float                cost;              // cost of the route
+	vector<unsigned int> nodeid_sequence;   // A sequence of coordinate ids with the shortest path
+	float                sum_weight;        // Total cost of the route. The sum weight of all edges.
+											// Expressed in the same units as the graph's edge weights.
 };
 
 class RoutePlanner
@@ -41,4 +39,4 @@ public:
 							Algorithm    algorithm);   // Compute the shortest path from point A to B
 };
 
-#endif   // SHORTESTPATH_H
+#endif   // ROUTEPLANNER_H

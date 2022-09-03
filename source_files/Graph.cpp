@@ -2,6 +2,24 @@
 
 using namespace std;
 
+Node::Node(LatLng       latlng,
+		   unsigned int subgraph_id) :
+	latlng(latlng),
+	subgraph_id(subgraph_id)
+{
+}
+
+AdjacentEdge::AdjacentEdge(unsigned int v,
+						   float        w,
+						   EdgeType     edge_type,
+						   bool         is_startpoint) :
+	v(v),
+	w(w),
+	edge_type(edge_type),
+	is_startpoint(is_startpoint)
+{
+}
+
 Graph::Graph() :
 	nodes(),
 	adjacent_edges_vec()
@@ -49,7 +67,7 @@ void Graph::AddEdge(unsigned int u,
 
 	adjacent_edges_vec.resize(nodes.size());
 
-	if (edge_type == EdgeType::DOUBLE_WAY_EDGE)
+	if (edge_type == EdgeType::TWO_WAY)
 	{
 		adjacent_edges_vec[u].emplace_back(v,
 										   w,
@@ -63,7 +81,7 @@ void Graph::AddEdge(unsigned int u,
 	else
 	{
 		auto const opposite_edge_type =
-				edge_type == EdgeType::FORWARD_EDGE ? EdgeType::BACKWARD_EDGE : EdgeType::FORWARD_EDGE;
+				edge_type == EdgeType::FORWARD ? EdgeType::BACKWARD : EdgeType::FORWARD;
 		adjacent_edges_vec[u].emplace_back(v,
 										   w,
 										   edge_type,
@@ -75,17 +93,35 @@ void Graph::AddEdge(unsigned int u,
 	}
 }
 
-vector<AdjacentEdge> Graph::GetForwardEdges(unsigned int node_id) const
+vector<AdjacentEdge> Graph::GetAdjacentEdges(unsigned int node_id,
+											 bool         backwards_graph) const
 {
 	vector<AdjacentEdge> ret;
-	for (const auto& e : adjacent_edges_vec[node_id])
+
+	// Forward edges
+	if (!backwards_graph)
 	{
-		if (e.edge_type != EdgeType::BACKWARD_EDGE)
+		for (const auto& e : adjacent_edges_vec[node_id])
 		{
-			ret.emplace_back(e);
+			if (e.edge_type != EdgeType::BACKWARD)
+			{
+				ret.emplace_back(e);
+			}
 		}
+		return ret;
 	}
-	return ret;
+	// Backward edges
+	else
+	{
+		for (const auto& e : adjacent_edges_vec[node_id])
+		{
+			if (e.edge_type != EdgeType::FORWARD)
+			{
+				ret.emplace_back(e);
+			}
+		}
+		return ret;
+	}
 }
 
 QueryGraph::QueryGraph(Graph& G, LatLng a, LatLng b) :
@@ -97,9 +133,10 @@ QueryGraph::QueryGraph(Graph& G, LatLng a, LatLng b) :
 
 vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 {
+	return vector<AdjacentEdge>();
 }
 
-//GraphStorage::GraphStorage(int vertices, int max_edge_segment_length) :
+// GraphStorage::GraphStorage(int vertices, int max_edge_segment_length) :
 //	kd_tree(coordinates),
 //	coords(vertices),
 //	adjacency_lists(vertices),
@@ -108,28 +145,28 @@ vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 //	directed_edges_counter(0),
 //	MAX_EDGE_SEGMENT_LENGTH(max_edge_segment_length)
 //{
-//}
+// }
 //
-//GraphStorage::~GraphStorage()
+// GraphStorage::~GraphStorage()
 //{
-//}
+// }
 //
-//int GraphStorage::GetNodes() const
+// int GraphStorage::GetNodes() const
 //{
 //	return coords.size();
-//}
+// }
 //
-//int GraphStorage::GetEdges() const
+// int GraphStorage::GetEdges() const
 //{
 //	return directed_edges_counter;
-//}
+// }
 //
-//void GraphStorage::SetCoordinate(int node_id, const double& lat, const double& lng)
+// void GraphStorage::SetCoordinate(int node_id, const double& lat, const double& lng)
 //{
 //	coords[node_id] = LatLng(lat, lng);
-//}
+// }
 //
-//void GraphStorage::AddEdge(int u, int v, float w, bool double_way, bool is_startpoint)
+// void GraphStorage::AddEdge(int u, int v, float w, bool double_way, bool is_startpoint)
 //{
 //	if (double_way)
 //	{
@@ -143,19 +180,19 @@ vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 //		adjacency_lists[v].push_back(AdjListElement(u, w, Edge::BACKWARD_EDGE, is_startpoint));
 //		directed_edges_counter++;
 //	}
-//}
+// }
 //
-//void GraphStorage::CreateKDTree()
+// void GraphStorage::CreateKDTree()
 //{
 //	kd_tree.Create();   // create the KD Tree from our coordinates vector
-//}
+// }
 //
-//const LatLng& GraphStorage::GetCoordinate(int node_id) const
+// const LatLng& GraphStorage::GetCoordinate(int node_id) const
 //{
 //	return coords[node_id];
-//}
+// }
 //
-//NearestEdgeInfo GraphStorage::GetNearestEdge(const LatLng& source, const double& radius) const
+// NearestEdgeInfo GraphStorage::GetNearestEdge(const LatLng& source, const double& radius) const
 //{
 //	// Get all nodes within a radius
 //	vector<int> nodes = kd_tree.RadiusSearch(source, radius);
@@ -224,9 +261,9 @@ vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 //		}
 //	}
 //	return current_best;
-//}
+// }
 //
-//vector<AdjacentEdge> GraphStorage::GetForwardEdges(int u) const
+// vector<AdjacentEdge> GraphStorage::GetForwardEdges(int u) const
 //{
 //	vector<AdjacentEdge> list;
 //	for (const auto& e : adjacency_lists[u])
@@ -235,9 +272,9 @@ vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 //			list.push_back(AdjacentEdge(e.v, e.w));
 //	}
 //	return list;
-//}
+// }
 //
-//vector<AdjacentEdge> GraphStorage::GetBackwardEdges(int u) const
+// vector<AdjacentEdge> GraphStorage::GetBackwardEdges(int u) const
 //{
 //	vector<AdjacentEdge> list;
 //	for (const auto& e : adjacency_lists[u])
@@ -246,9 +283,9 @@ vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 //			list.push_back(AdjacentEdge(e.v, e.w));
 //	}
 //	return list;
-//}
+// }
 //
-//Edge GraphStorage::FindForwardEdge(int u, int v) const
+// Edge GraphStorage::FindForwardEdge(int u, int v) const
 //{
 //	const auto find_edge_uv = find_if(adjacency_lists[u].begin(), adjacency_lists[u].end(),
 //									  [&](const AdjListElement& e) {
@@ -259,9 +296,9 @@ vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 //		return Edge(u, (*find_edge_uv).v, (*find_edge_uv).w, (*find_edge_uv).edge_type);
 //	}
 //	return Edge();
-//}
+// }
 //
-//void GraphStorage::FindConnectedComponents()
+// void GraphStorage::FindConnectedComponents()
 //{
 //	// Iterative DFS
 //	// (recursion would result in stack overflow)
@@ -295,10 +332,10 @@ vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
 //		current_component_id++;
 //	}
 //	cout << current_component_id << " connected components.\n";
-//}
+// }
 //
-//bool GraphStorage::AreConnected(int u, int v) const
+// bool GraphStorage::AreConnected(int u, int v) const
 //{
 //	return node_to_connected_component_id[u] ==
 //		   node_to_connected_component_id[v];
-//}
+// }

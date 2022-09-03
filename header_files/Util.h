@@ -16,9 +16,8 @@ class Util
 public:
 	static vector<string> Tokenize(const string& str,
 								   const string& delim = " ");   // Returns a vector with the tokens
-																 //	template<typename T> static void PrintVector(const vector<T>& vec);     // Prints vector
-	static string DoubleToString(const double& d,                // Convert double as string, with target precision
-								 int           precision = 15);            // 15 is the precision that is guaranteed by "double".
+	static string         DoubleToString(const double& d,        // Convert double as string, with target precision
+										 int           precision = 15);    // 15 is the precision that is guaranteed by "double".
 
 	// Print vector of type T
 	template<typename T> static void PrintVector(const vector<T>& vec)

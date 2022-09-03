@@ -7,22 +7,17 @@ using namespace std;
 
 enum EdgeType
 {
-	FORWARD_EDGE,
-	BACKWARD_EDGE,
-	DOUBLE_WAY_EDGE   // double edges need to have the same w on both sides
+	FORWARD,
+	BACKWARD,
+	TWO_WAY   // two-way edges need to have the same w on both sides
 };
 
 class Node
 {
 public:
 	Node(LatLng       latlng,
-		 unsigned int subgraph_id = 0) :
-		latlng(latlng),
-		subgraph_id(subgraph_id)
-	{
-	}
+		 unsigned int subgraph_id = 0);   // we want nodes to have subgraph_ids so that we know if any given 2 nodes are connected
 
-private:
 	LatLng         latlng;
 	unsigned short subgraph_id;
 };
@@ -33,17 +28,11 @@ public:
 	AdjacentEdge(unsigned int v,
 				 float        w,
 				 EdgeType     edge_type,
-				 bool         is_startpoint) :
-		v(v),
-		w(w),
-		edge_type(edge_type),
-		is_startpoint(is_startpoint)
-	{
-	}
+				 bool         is_startpoint);
 
 	unsigned v;
 	float    w;
-	char     edge_type;
+	EdgeType edge_type;
 	bool     is_startpoint;
 };
 
@@ -58,25 +47,17 @@ class Graph
 public:
 	Graph();   // Create GraphStorage and allocate memory
 
-	size_t CountNodes() const;   // Number of nodes
-	size_t CountEdges() const;   // Number of directed edges
-	void   AddNode(unsigned int  node_id,
-				   const LatLng& latlng);   // Add node
-	void   AddEdge(unsigned int u,
-				   unsigned int v,
-				   float        w,
-				   EdgeType     edge_type,
-				   bool         is_startpoint);   // Add edge (u,v) with w weight
-
-	//	const LatLng&        GetCoordinate(int node_id) const;   // Get the latitude,longitude of a node
-	//	NearestEdgeInfo      GetNearestEdge(const LatLng& source,
-	//										const double& radius) const;   // Nearest edge from coordinate
-	//	vector<AdjacentEdge> GetForwardEdges(int u) const;                 // Forward adjacent edges of the vertex u
-	//	vector<AdjacentEdge> GetBackwardEdges(int u) const;                // Backward adjacent edges of the vertex u
-	//	Edge                 FindForwardEdge(int u, int v) const;          // Returns edge if it exists
-	//	bool                 AreConnected(int u, int v) const;             // Returns edge if it exists
-
-	vector<AdjacentEdge> GetForwardEdges(unsigned int node_id) const;
+	size_t               CountNodes() const;   // Number of nodes
+	size_t               CountEdges() const;   // Number of directed edges
+	void                 AddNode(unsigned int  node_id,
+								 const LatLng& latlng);   // Add node
+	void                 AddEdge(unsigned int u,
+								 unsigned int v,
+								 float        w,
+								 EdgeType     edge_type,
+								 bool         is_startpoint);   // Add edge (u,v) with w weight
+	vector<AdjacentEdge> GetAdjacentEdges(unsigned int node_id,
+										  bool         backwards_graph = false) const;
 
 private:
 	vector<Node>                 nodes;                // The nodes, indexed with node_ID
