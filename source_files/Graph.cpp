@@ -88,6 +88,17 @@ vector<AdjacentEdge> Graph::GetForwardEdges(unsigned int node_id) const
 	return ret;
 }
 
+QueryGraph::QueryGraph(Graph& G, LatLng a, LatLng b) :
+	G(G),
+	a(a),
+	b(b)
+{
+}
+
+vector<AdjacentEdge> QueryGraph::GetForwardEdges(unsigned int node_id) const
+{
+}
+
 //GraphStorage::GraphStorage(int vertices, int max_edge_segment_length) :
 //	kd_tree(coordinates),
 //	coords(vertices),

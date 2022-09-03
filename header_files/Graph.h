@@ -83,4 +83,18 @@ private:
 	vector<vector<AdjacentEdge>> adjacent_edges_vec;   // Vector where the X-element contains all edges connected to node with id == X
 };
 
+class QueryGraph
+{
+public:
+	QueryGraph(Graph& G, LatLng a, LatLng b);   // Create GraphStorage and allocate memory
+	vector<AdjacentEdge> GetForwardEdges(unsigned int node_id) const;
+
+private:
+	const Graph&                 G;
+	LatLng                       a;
+	LatLng                       b;
+	vector<Node>                 virtual_nodes;                // virtual nodes
+	vector<vector<AdjacentEdge>> virtual_adjacent_edges_vec;   // virtual edges
+};
+
 #endif   // GRAPH_H

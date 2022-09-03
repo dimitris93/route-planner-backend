@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
 	Route r(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Dijkstra));
 	Util::PrintVector<unsigned int>(r.nodeid_sequence);
-//	cout << r.cost << endl;
+	cout << r.cost << endl;
 
 	//	Graph::Coordinate asd(LatLng(0, 0));
 
