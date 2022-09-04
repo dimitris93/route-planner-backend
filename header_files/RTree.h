@@ -9,11 +9,13 @@ class RTree
 {
 public:
 	RTree();
+	void AddEdge(int u, int v, GpsCoordinate p1, GpsCoordinate p2);
 
 private:
 	class LineSegment
 	{
-		LineSegment();
+	public:
+		LineSegment(int a, int b);
 
 		unsigned int a;   // node ID a
 		unsigned int b;   // node ID b
@@ -22,6 +24,7 @@ private:
 	class Rectangle
 	{
 	public:
+		Rectangle();
 		Rectangle(GpsCoordinate p1,
 				  GpsCoordinate p2);   // Rectangle that bounds edge a---b
 
@@ -29,13 +32,14 @@ private:
 		GpsCoordinate p2;
 
 		Rectangle Expand(Rectangle r2) const;
-		double    ComputePerimeter() const;
+		double    ComputeArea() const;
 	};
 
 	class IndexEntry
 	{
 	public:
-		IndexEntry();
+		IndexEntry(Rectangle   r,
+				   LineSegment l);
 
 		Rectangle   r;
 		LineSegment l;
@@ -46,35 +50,33 @@ private:
 	{
 	public:
 		Node();
-
 		virtual Leaf& ChooseLeaf(IndexEntry E) = 0;
-		Rectangle     r;
+
+		Rectangle r;
 	};
 
 	class Leaf : public Node
 	{
 	public:
 		Leaf();
+		Leaf& ChooseLeaf(IndexEntry E);
 
-		vector<IndexEntry> entries;
-		Leaf&              ChooseLeaf(IndexEntry E);
+		vector<unique_ptr<IndexEntry>> entries;
 	};
 
 	class NonLeaf : public Node
 	{
 	public:
 		NonLeaf();
+		Leaf& ChooseLeaf(IndexEntry E);
 
 		vector<unique_ptr<Node>> children;
-		Leaf&                    ChooseLeaf(IndexEntry E);
 	};
 
 	const unsigned int m = 4;   // m <= M/2
 	const unsigned int M = 8;
 
 	unique_ptr<Node> root;
-
-	void AddIndexEntry(IndexEntry E);
 };
 
 #endif   // RTREE_H

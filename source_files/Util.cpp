@@ -22,3 +22,8 @@ string Util::DoubleToString(const double& d, int precision)
 	ss << std::setprecision(precision) << d;
 	return ss.str();
 }
+
+size_t Util::size_t_abs(size_t x)
+{
+	return x > 0 ? x : -x;
+}

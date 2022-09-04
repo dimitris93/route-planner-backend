@@ -1,7 +1,7 @@
 #include "GpsCoordinate.h"
 #include "Graph.h"
-#include "RoutePlanner.h"
 #include "RTree.h"
+#include "RoutePlanner.h"
 
 int main(int argc, char* argv[])
 {
@@ -11,34 +11,38 @@ int main(int argc, char* argv[])
 	//					.ToString()
 	//		 << endl;
 
-//	Graph G;
-//	G.AddNode(0, GpsCoordinate(4, 7));
-//	G.AddNode(1, GpsCoordinate(2, 3));
-//	G.AddNode(2, GpsCoordinate(6, 5));
-//	G.AddNode(3, GpsCoordinate(6, 5));
-//	G.AddNode(4, GpsCoordinate(6, 5));
-//	G.AddEdge(0, 1, 6, EdgeType::TWO_WAY, true);
-//	G.AddEdge(1, 2, 5, EdgeType::TWO_WAY, true);
-//	G.AddEdge(2, 3, 5, EdgeType::TWO_WAY, true);
-//	G.AddEdge(3, 4, 1, EdgeType::TWO_WAY, true);
-//	G.AddEdge(4, 0, 1, EdgeType::TWO_WAY, true);
-//	G.AddEdge(1, 3, 2, EdgeType::TWO_WAY, true);
-//	G.AddEdge(1, 4, 2, EdgeType::TWO_WAY, true);
-//
-//	//	cout << G.CountNodes() << endl;
-//	//	cout << G.CountEdges() << endl;
-//
-//	Route r(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Dijkstra));
-//	Util::PrintVector<unsigned int>(r.nodeid_sequence);
-//	cout << r.sum_weight << endl;
-//
-//	cout << "-----------------" << endl;
-//
-//	Route r2(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Bidirectional_Dijkstra));
-//	Util::PrintVector<unsigned int>(r2.nodeid_sequence);
-//	cout << r2.sum_weight << endl;
+	//	Graph G;
+	//	G.AddNode(0, GpsCoordinate(4, 7));
+	//	G.AddNode(1, GpsCoordinate(2, 3));
+	//	G.AddNode(2, GpsCoordinate(6, 5));
+	//	G.AddNode(3, GpsCoordinate(6, 5));
+	//	G.AddNode(4, GpsCoordinate(6, 5));
+	//	G.AddEdge(0, 1, 6, EdgeType::TWO_WAY, true);
+	//	G.AddEdge(1, 2, 5, EdgeType::TWO_WAY, true);
+	//	G.AddEdge(2, 3, 5, EdgeType::TWO_WAY, true);
+	//	G.AddEdge(3, 4, 1, EdgeType::TWO_WAY, true);
+	//	G.AddEdge(4, 0, 1, EdgeType::TWO_WAY, true);
+	//	G.AddEdge(1, 3, 2, EdgeType::TWO_WAY, true);
+	//	G.AddEdge(1, 4, 2, EdgeType::TWO_WAY, true);
+	//
+	//	//	cout << G.CountNodes() << endl;
+	//	//	cout << G.CountEdges() << endl;
+	//
+	//	Route r(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Dijkstra));
+	//	Util::PrintVector<unsigned int>(r.nodeid_sequence);
+	//	cout << r.sum_weight << endl;
+	//
+	//	cout << "-----------------" << endl;
+	//
+	//	Route r2(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Bidirectional_Dijkstra));
+	//	Util::PrintVector<unsigned int>(r2.nodeid_sequence);
+	//	cout << r2.sum_weight << endl;
 
-	RTree();
+	RTree rtree;
+	rtree.AddEdge(0,
+				  1,
+				  GpsCoordinate(1, 3),
+				  GpsCoordinate(2, 5));
 	//	Graph::Coordinate asd(LatLng(0, 0));
 
 	//	G.AddEdge(1, 2, 2, true);

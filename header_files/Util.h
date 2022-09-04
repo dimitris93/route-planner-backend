@@ -18,6 +18,7 @@ public:
 								   const string& delim = " ");   // Returns a vector with the tokens
 	static string         DoubleToString(const double& d,        // Convert double as string, with target precision
 										 int           precision = 15);    // 15 is the precision that is guaranteed by "double".
+	static size_t         size_t_abs(size_t x);
 
 	// Print vector of type T
 	template<typename T> static void PrintVector(const vector<T>& vec)
