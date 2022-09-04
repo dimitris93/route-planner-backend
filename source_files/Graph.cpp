@@ -2,9 +2,9 @@
 
 using namespace std;
 
-Node::Node(LatLng       latlng,
+Node::Node(GpsCoordinate coord,
 		   unsigned int subgraph_id) :
-	latlng(latlng),
+	coord(coord),
 	subgraph_id(subgraph_id)
 {
 }
@@ -37,12 +37,12 @@ size_t Graph::CountEdges() const
 }
 
 void Graph::AddNode(unsigned int  node_id,
-					const LatLng& latlng)
+					const GpsCoordinate& coord)
 {
 	// Node ids must begin with 0 and increase by 1 at a time.
 	if (node_id == nodes.size())
 	{
-		nodes.emplace_back(latlng);
+		nodes.emplace_back(coord);
 	}
 	else
 	{
@@ -124,7 +124,7 @@ vector<AdjacentEdge> Graph::GetAdjacentEdges(unsigned int node_id,
 	}
 }
 
-QueryGraph::QueryGraph(Graph& G, LatLng a, LatLng b) :
+QueryGraph::QueryGraph(Graph& G, GpsCoordinate a, GpsCoordinate b) :
 	G(G),
 	a(a),
 	b(b)

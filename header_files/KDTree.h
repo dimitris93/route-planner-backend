@@ -1,26 +1,26 @@
 #ifndef KD_TREE_H
 #define KD_TREE_H
 
+#include "GpsCoordinate.h"
 #include <vector>
-#include "LatLng.h"
 
 using namespace std;
 
 class KDTree
 {
 public:
-    KDTree(const vector<LatLng> &coordinates);            // Create an empty KD Tree
+    KDTree(const vector<GpsCoordinate> &coordinates);            // Create an empty KD Tree
     ~KDTree();                                            // Destroy the KD Tree
 
     void        Create();                                 // Create a balanced KD Tree from a set of coordinates
     void        Print();                                  // Print each level of the KD Tree
-    int         NNSearch(const LatLng &target) const;     // Begin the recursive Nearest Neighbor Search
-    vector<int> RadiusSearch(const LatLng &source,
+    int         NNSearch(const GpsCoordinate&target) const;     // Begin the recursive Nearest Neighbor Search
+    vector<int> RadiusSearch(const GpsCoordinate&source,
                              const double &radius) const; // Begin the recursive search for nodes within a radius
 
 private:
     vector<int>          kd_tree;                         // The KD Tree is a binary tree stored as a vector
-    const vector<LatLng> &coordinates;                    // Reference to the coordinates vector
+    const vector<GpsCoordinate> &coordinates;                    // Reference to the coordinates vector
 
     void CreateNode(vector<int> &sorted_indexes_xy,       // The node ids sorted by x (lat) and y (lng)
                     vector<int> &sorted_indexes_yx,       // The node ids sorted by y (lng) and x (lat)

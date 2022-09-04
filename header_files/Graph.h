@@ -1,7 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include "LatLng.h"
+#include "GpsCoordinate.h"
 
 using namespace std;
 
@@ -15,10 +15,10 @@ enum EdgeType
 class Node
 {
 public:
-	Node(LatLng       latlng,
-		 unsigned int subgraph_id = 0);   // we want nodes to have subgraph_ids so that we know if any given 2 nodes are connected
+	Node(GpsCoordinate coord,
+		 unsigned int  subgraph_id = 0);   // we want nodes to have subgraph_ids so that we know if any given 2 nodes are connected
 
-	LatLng         latlng;
+	GpsCoordinate  coord;
 	unsigned short subgraph_id;
 };
 
@@ -49,8 +49,8 @@ public:
 
 	size_t               CountNodes() const;   // Number of nodes
 	size_t               CountEdges() const;   // Number of directed edges
-	void                 AddNode(unsigned int  node_id,
-								 const LatLng& latlng);   // Add node
+	void                 AddNode(unsigned int         node_id,
+								 const GpsCoordinate& coord);   // Add node
 	void                 AddEdge(unsigned int u,
 								 unsigned int v,
 								 float        w,
@@ -67,13 +67,13 @@ private:
 class QueryGraph
 {
 public:
-	QueryGraph(Graph& G, LatLng a, LatLng b);   // Create GraphStorage and allocate memory
+	QueryGraph(Graph& G, GpsCoordinate a, GpsCoordinate b);   // Create GraphStorage and allocate memory
 	vector<AdjacentEdge> GetForwardEdges(unsigned int node_id) const;
 
 private:
 	const Graph&                 G;
-	LatLng                       a;
-	LatLng                       b;
+	GpsCoordinate                a;
+	GpsCoordinate                b;
 	vector<Node>                 virtual_nodes;                // virtual nodes
 	vector<vector<AdjacentEdge>> virtual_adjacent_edges_vec;   // virtual edges
 };

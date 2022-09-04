@@ -124,23 +124,33 @@ Route RoutePlanner::plan_route(unsigned int s,
 			dist2[t] = 0;                // set distance of t->t path to 0
 			pq2.push(make_pair(t, 0));   // add t to pq2
 
-			unsigned int common_node = -1;
+			unsigned int common_node = -1; // == numeric_limits<unsigned int>::max() - 1
 			float        best_dist   = numeric_limits<float>::max();
 			// While our priority queue is not empty
-			while (!pq.empty() &&
-				   !pq2.empty() &&
-				   dist[pq.top().first] + dist2[pq2.top().first] < best_dist)
+			while (true)
 			{
 				// Forward Dijkstra
-				while (pq.top().second > dist[pq.top().first])
+				while (!pq.empty() &&
+					   pq.top().second > dist[pq.top().first])
 				{
 					pq.pop();   // delete if node was added more than once (value not up-to-date)
 				}
-				if (pq.empty())
+				// Backward Dijkstra
+				while (!pq2.empty() &&
+					   pq2.top().second > dist2[pq2.top().first])
+				{
+					pq2.pop();   // delete if node was added more than once (value not up-to-date)
+				}
+
+				// Terminate condition. A path shorter than best_dist could not have existed beyond this point.
+				if (pq.empty() ||
+					pq2.empty() ||
+					dist[pq.top().first] + dist2[pq2.top().first] >= best_dist)
 				{
 					break;
 				}
 
+				// Forward Dijkstra
 				unsigned int u = pq.top().first;
 				pq.pop();
 
@@ -171,15 +181,6 @@ Route RoutePlanner::plan_route(unsigned int s,
 				}
 
 				// Backward Dijkstra
-				while (pq2.top().second > dist2[pq2.top().first])
-				{
-					pq2.pop();   // delete if node was added more than once (value not up-to-date)
-				}
-				if (pq2.empty())
-				{
-					break;
-				}
-
 				u = pq2.top().first;
 				pq2.pop();
 
