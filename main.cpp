@@ -1,7 +1,5 @@
 #include "GpsCoordinate.h"
-#include "Graph.h"
-#include "RTree.h"
-#include "RoutePlanner.h"
+#include "Util.h"
 
 int main(int argc, char* argv[])
 {
@@ -11,41 +9,74 @@ int main(int argc, char* argv[])
 	//					.ToString()
 	//		 << endl;
 
-	//	Graph G;
-	//	G.AddNode(0, GpsCoordinate(4, 7));
-	//	G.AddNode(1, GpsCoordinate(2, 3));
-	//	G.AddNode(2, GpsCoordinate(6, 5));
-	//	G.AddNode(3, GpsCoordinate(6, 5));
-	//	G.AddNode(4, GpsCoordinate(6, 5));
-	//	G.AddEdge(0, 1, 6, EdgeType::TWO_WAY, true);
-	//	G.AddEdge(1, 2, 5, EdgeType::TWO_WAY, true);
-	//	G.AddEdge(2, 3, 5, EdgeType::TWO_WAY, true);
-	//	G.AddEdge(3, 4, 1, EdgeType::TWO_WAY, true);
-	//	G.AddEdge(4, 0, 1, EdgeType::TWO_WAY, true);
-	//	G.AddEdge(1, 3, 2, EdgeType::TWO_WAY, true);
-	//	G.AddEdge(1, 4, 2, EdgeType::TWO_WAY, true);
+	//		Graph G;
+	//		G.AddNode(0, GpsCoordinate(4, 7));
+	//		G.AddNode(1, GpsCoordinate(2, 3));
+	//		G.AddNode(2, GpsCoordinate(6, 5));
+	//		G.AddNode(3, GpsCoordinate(6, 5));
+	//		G.AddNode(4, GpsCoordinate(6, 5));
+	//		G.AddEdge(0, 1, 6, EdgeType::TWO_WAY, true);
+	//		G.AddEdge(1, 2, 5, EdgeType::TWO_WAY, true);
+	//		G.AddEdge(2, 3, 5, EdgeType::TWO_WAY, true);
+	//		G.AddEdge(3, 4, 1, EdgeType::TWO_WAY, true);
+	//		G.AddEdge(4, 0, 1, EdgeType::TWO_WAY, true);
+	//		G.AddEdge(1, 3, 2, EdgeType::TWO_WAY, true);
+	//		G.AddEdge(1, 4, 2, EdgeType::TWO_WAY, true);
 	//
-	//	//	cout << G.CountNodes() << endl;
-	//	//	cout << G.CountEdges() << endl;
+	//		//	cout << G.CountNodes() << endl;
+	//		//	cout << G.CountEdges() << endl;
 	//
-	//	Route r(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Dijkstra));
-	//	Util::PrintVector<unsigned int>(r.nodeid_sequence);
-	//	cout << r.sum_weight << endl;
+	//		Route r(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Dijkstra));
+	//		Util::PrintVector<unsigned int>(r.nodeid_sequence);
+	//		cout << r.sum_weight << endl;
 	//
-	//	cout << "-----------------" << endl;
+	//		cout << "-----------------" << endl;
 	//
-	//	Route r2(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Bidirectional_Dijkstra));
-	//	Util::PrintVector<unsigned int>(r2.nodeid_sequence);
-	//	cout << r2.sum_weight << endl;
+	//		Route r2(RoutePlanner::plan_route(0, 2, G, RoutePlanner::Bidirectional_Dijkstra));
+	//		Util::PrintVector<unsigned int>(r2.nodeid_sequence);
+	//		cout << r2.sum_weight << endl;
 
-	RTree rtree;
-	rtree.AddEdge(0,
-				  1,
-				  GpsCoordinate(1, 3),
-				  GpsCoordinate(2, 5));
-	//	Graph::Coordinate asd(LatLng(0, 0));
+	//	RTree::Rectangle r1(GpsCoordinate(1, 3),
+	//						GpsCoordinate(2, 5));
+	//	RTree::Rectangle r2(GpsCoordinate(2, 6),
+	//						GpsCoordinate(3, 7));
+	//	auto             r3 = r1.Expand(r2);
+	//	cout << r3.p1.ToString() << endl;
+	//	cout << r3.p2.ToString() << endl;
+	//
+	//	cout << r3.ComputePerimeter() << endl;
 
-	//	G.AddEdge(1, 2, 2, true);
+	vector<unique_ptr<GpsCoordinate>> gps_ptrs;
+	vector<unique_ptr<GpsCoordinate>> gps_ptrs_2;
+	gps_ptrs.emplace_back(new GpsCoordinate(1, 3));
+	gps_ptrs.emplace_back(new GpsCoordinate(12, 32));
+	gps_ptrs.emplace_back(new GpsCoordinate(16, 52));
+	gps_ptrs_2.emplace_back(new GpsCoordinate(5, 7));
+	gps_ptrs_2.emplace_back(new GpsCoordinate(3, 79));
+
+	cout << gps_ptrs.size() << endl;
+	cout << gps_ptrs_2.size() << endl;
+
+
+	cout << gps_ptrs.size() << endl;
+	cout << gps_ptrs_2.size() << endl;
+
+
+
+	for (int i = 0; i < 5; ++i)
+	{
+		for (int j = i + 1; j < 5; ++j)
+		{
+			cout << i << " " << j << endl;
+		}
+	}
+
+
+	//	RTree rtree;
+	//	rtree.AddEdge(0,
+	//				  1,
+	//				  GpsCoordinate(1, 3),
+	//				  GpsCoordinate(2, 5));
 }
 
 // int main(int argc, char* argv[])

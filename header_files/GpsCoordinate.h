@@ -16,6 +16,7 @@ class GpsCoordinate
 {
 public:
 	GpsCoordinate(const double& lat, const double& lng);
+	~GpsCoordinate() = default;
 
 	double               GetLat() const;                                     // Actual Latitude value as double
 	double               GetLng() const;                                     // Actual Longitude value as double

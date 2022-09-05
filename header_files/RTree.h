@@ -9,16 +9,16 @@ class RTree
 {
 public:
 	RTree();
-	void AddEdge(int u, int v, GpsCoordinate p1, GpsCoordinate p2);
+	void AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2);
 
 private:
 	class LineSegment
 	{
 	public:
-		LineSegment(int a, int b);
+		LineSegment(nodeid_t a, nodeid_t b);
 
-		unsigned int a;   // node ID a
-		unsigned int b;   // node ID b
+		nodeid_t a;   // node ID a
+		nodeid_t b;   // node ID b
 	};
 
 	class Rectangle
@@ -50,7 +50,7 @@ private:
 	{
 	public:
 		Node();
-		virtual Leaf& ChooseLeaf(IndexEntry E) = 0;
+		virtual Leaf& ChooseLeaf(const Rectangle& entry_r) = 0;   // this makes the Node class Abstract
 
 		Rectangle r;
 	};
@@ -59,7 +59,7 @@ private:
 	{
 	public:
 		Leaf();
-		Leaf& ChooseLeaf(IndexEntry E);
+		Leaf& ChooseLeaf(const Rectangle& entry_r) override;
 
 		vector<unique_ptr<IndexEntry>> entries;
 	};
@@ -68,13 +68,13 @@ private:
 	{
 	public:
 		NonLeaf();
-		Leaf& ChooseLeaf(IndexEntry E);
+		Leaf& ChooseLeaf(const Rectangle& entry_r) override;
 
 		vector<unique_ptr<Node>> children;
 	};
 
-	const unsigned int m = 4;   // m <= M/2
-	const unsigned int M = 8;
+	const nodeid_t m = 4;   // m <= M/2
+	const nodeid_t M = 8;
 
 	unique_ptr<Node> root;
 };

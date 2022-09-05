@@ -3,40 +3,29 @@
 RTree::RTree() :
 	root(new Leaf())
 {
-	//	RTree::Rectangle r1(GpsCoordinate(1, 3),
-	//						GpsCoordinate(2, 5));
-	//	RTree::Rectangle r2(GpsCoordinate(2, 6),
-	//						GpsCoordinate(3, 7));
-	//	auto             r3 = r1.Expand(r2);
-	//	cout << r3.p1.ToString() << endl;
-	//	cout << r3.p2.ToString() << endl;
-	//
-	//	cout << r3.ComputePerimeter() << endl;
-	root;
 }
 
-void RTree::AddEdge(int u, int v, GpsCoordinate p1, GpsCoordinate p2)
+void RTree::AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2)
 {
+	// ChooseLeaf
+	Leaf& chosen_leaf = root->ChooseLeaf(Rectangle(p1, p2));
 
-	IndexEntry E = IndexEntry(Rectangle(p1, p2),
-							  LineSegment(u, v));
+	// Add a new Index Entry to the chosen leaf
+	chosen_leaf.entries.emplace_back(new IndexEntry(Rectangle(p1, p2),
+													LineSegment(u, v)));
 
-	Leaf& chosen_leaf = root->ChooseLeaf(E);
-
-	chosen_leaf.entries.emplace_back(&E);
-
-	// Split nodes
-	vector<unique_ptr<IndexEntry>> split_1;
-	vector<unique_ptr<IndexEntry>> split_2;
-	Rectangle                      r_split_1;
-	Rectangle                      r_split_2;
+	// SplitNodes - Quadratic-cost Algorithm
+	// If the chosen leaf's size becomes M + 1 after the insertion, then we need to split it.
+	vector<unique_ptr<IndexEntry>> group_1;
+	vector<unique_ptr<IndexEntry>> group_2;
 	if (chosen_leaf.entries.size() > M)
 	{
 		// PickSeeds
-		// Select i and j with highest computed d, to be the first node in each split
-		double max_d = 0;
-		int    max_i = -1;
-		int    max_j = -1;
+		// Select the two nodes that would waste the most area, if they were put in the same group.
+		// Put those 2 nodes in different groups.
+		double max_d        = 0;
+		int    seed_1_index = -1;
+		int    seed_2_index = -1;
 		for (int i = 0; i < M + 1; ++i)
 		{
 			for (int j = i + 1; j < M + 1; ++j)
@@ -46,83 +35,73 @@ void RTree::AddEdge(int u, int v, GpsCoordinate p1, GpsCoordinate p2)
 				const double     d  = r1.Expand(r2).ComputeArea() - r1.ComputeArea() - r2.ComputeArea();
 				if (d > max_d)
 				{
-					max_d = d;
-					max_i = i;
-					max_j = j;
+					max_d        = d;
+					seed_1_index = i;
+					seed_2_index = j;
 				}
 			}
 		}
-		r_split_1 = r_split_1.Expand(chosen_leaf.entries[max_i]->r);
-		r_split_2 = r_split_2.Expand(chosen_leaf.entries[max_j]->r);
-		split_1.emplace_back(std::move(chosen_leaf.entries[max_i]));
-		split_2.emplace_back(std::move(chosen_leaf.entries[max_j]));
-		chosen_leaf.entries.erase(chosen_leaf.entries.begin() + max_i);
-		chosen_leaf.entries.erase(chosen_leaf.entries.begin() + max_j);
+		group_1.emplace_back(std::move(chosen_leaf.entries[seed_1_index]));   // move seed 1 to group 1
+		group_2.emplace_back(std::move(chosen_leaf.entries[seed_2_index]));   // move seed 2 to group 2
+		// Erase Null pointers
+		Util::EraseVecIndices<unique_ptr<IndexEntry>>(chosen_leaf.entries, {seed_1_index, seed_2_index});
+
+		// Initialize the rectangles for the groups
+		Rectangle r_group_1 = group_1[0]->r;
+		Rectangle r_group_2 = group_2[0]->r;
 
 		// PickNext
 		while (true)
 		{
-			// If no more nodes left, quit
-			if (chosen_leaf.entries.size() == 0)
+			// No more nodes left to choose from
+			if (chosen_leaf.entries.empty())
 			{
 				break;
 			}
-			// If there are just enough nodes to meet minimum requirements, then we only have 1 option
-			if (Util::size_t_abs(split_1.size() - split_2.size()) <= chosen_leaf.entries.size())
+			// We need to ensure that the groups have a minimum of m nodes.
+			if (Util::min(group_1.size(), group_2.size()) + chosen_leaf.entries.size() == m)
 			{
-				auto & smallest_split = split_1.size() < split_2.size() ? split_1 : split_2;
-
-				for (int i = 0; i < chosen_leaf.entries.size(); ++i)
-				{
-					smallest_split.emplace_back(std::move(chosen_leaf.entries[i]));
-					chosen_leaf.entries.erase(chosen_leaf.entries.begin() + i);
-				}
-
+				auto& smallest_group = group_1.size() < group_2.size() ? group_1 : group_2;
+				Util::MoveVecPtr(chosen_leaf.entries, smallest_group);
+				break;
 			}
 
-			double max_d = 0;
-			int    max_i = 0;
-			bool   is_d1 = true;
+			double max_d          = 0;
+			int    chosen_i       = 0;
+			bool   chosen_group_1 = true;
 			for (int i = 0; i < chosen_leaf.entries.size(); ++i)
 			{
 				const Rectangle& r      = chosen_leaf.entries[i]->r;
 				const double     r_area = r.ComputeArea();
-				const double     d1     = r_split_1.Expand(r).ComputeArea() - r_area;
-				const double     d2     = r_split_2.Expand(r).ComputeArea() - r_area;
+				const double     d1     = r_group_1.Expand(r).ComputeArea() - r_area;
+				const double     d2     = r_group_2.Expand(r).ComputeArea() - r_area;
 				double           d      = fabs(d1 - d2);
 				if (d > max_d)
 				{
-					max_i = i;
-					is_d1 = d1 < d2;
+					max_d          = d;
+					chosen_i       = i;
+					chosen_group_1 = d1 < d2;
 				}
 			}
-			if (is_d1)
-			{
-				split_1.emplace_back(std::move(chosen_leaf.entries[max_i]));
-				chosen_leaf.entries.erase(chosen_leaf.entries.begin() + max_i);
-			}
-			else
-			{
-				split_2.emplace_back(std::move(chosen_leaf.entries[max_j]));
-				chosen_leaf.entries.erase(chosen_leaf.entries.begin() + max_j);
-			}
+			Util::MovePtr<IndexEntry>(chosen_leaf.entries,
+									  chosen_i,
+									  chosen_group_1 ? group_1 : group_2);
 		}
 	}
 }
 
-RTree::Leaf& RTree::Leaf::ChooseLeaf(RTree::IndexEntry E)
+RTree::Leaf& RTree::Leaf::ChooseLeaf(const Rectangle& entry_r)
 {
 	return *this;
 }
 
-RTree::Leaf& RTree::NonLeaf::ChooseLeaf(RTree::IndexEntry E)
+RTree::Leaf& RTree::NonLeaf::ChooseLeaf(const Rectangle& entry_r)
 {
-	size_t i        = 0;
-	size_t min_i    = 0;
-	double min_area = 0;
-	for (; i < children.size(); ++i)
+	int    min_i    = -1;
+	double min_area = numeric_limits<double>::max();
+	for (int i = 0; i < children.size(); ++i)
 	{
-		double area = children[i]->r.Expand(E.r).ComputeArea();
+		double area = children[i]->r.Expand(entry_r).ComputeArea();
 		if (area < min_area)
 		{
 			min_i    = i;
@@ -130,7 +109,7 @@ RTree::Leaf& RTree::NonLeaf::ChooseLeaf(RTree::IndexEntry E)
 		}
 	}
 
-	return children[min_i]->ChooseLeaf(E);
+	return children[min_i]->ChooseLeaf(entry_r);
 }
 
 RTree::Node::Node() :
@@ -151,7 +130,7 @@ RTree::NonLeaf::NonLeaf() :
 {
 }
 
-RTree::LineSegment::LineSegment(int a, int b) :
+RTree::LineSegment::LineSegment(nodeid_t a, nodeid_t b) :
 	a(a),
 	b(b)
 {
@@ -164,7 +143,6 @@ RTree::IndexEntry::IndexEntry(RTree::Rectangle   r,
 {
 }
 
-// ---------------------- Rectangle ----------------------
 RTree::Rectangle::Rectangle() :
 	p1(GpsCoordinate(0, 0)),
 	p2(GpsCoordinate(0, 0))

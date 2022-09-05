@@ -16,12 +16,12 @@ class Route
 {
 public:
 	Route();
-	Route(vector<unsigned int> nodeid_sequence,
-		  float                cost);
+	Route(vector<nodeid_t> nodeid_sequence,
+		  float            cost);
 
-	vector<unsigned int> nodeid_sequence;   // A sequence of coordinate ids with the shortest path
-	float                sum_weight;        // Total cost of the route. The sum weight of all edges.
-											// Expressed in the same units as the graph's edge weights.
+	vector<nodeid_t> nodeid_sequence;   // A sequence of coordinate ids with the shortest path
+	float            sum_weight;        // Total cost of the route. The sum weight of all edges.
+										// Expressed in the same units as the graph's edge weights.
 };
 
 class RoutePlanner
@@ -33,8 +33,8 @@ public:
 		Bidirectional_Dijkstra
 	};
 
-	static Route plan_route(unsigned int s,
-							unsigned int t,
+	static Route plan_route(nodeid_t     s,
+							nodeid_t     t,
 							const Graph& G,
 							Algorithm    algorithm);   // Compute the shortest path from point A to B
 };
