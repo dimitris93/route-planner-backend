@@ -20,12 +20,6 @@ AdjacentEdge::AdjacentEdge(nodeid_t v,
 {
 }
 
-Graph::Graph() :
-	nodes(),
-	adjacent_edges_vec()
-{
-}
-
 size_t Graph::CountNodes() const
 {
 	return nodes.size();

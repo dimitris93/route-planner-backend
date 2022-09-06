@@ -45,7 +45,7 @@ public:
 class Graph
 {
 public:
-	Graph();   // Create GraphStorage and allocate memory
+	Graph() = default;   // Create GraphStorage and allocate memory
 
 	size_t               CountNodes() const;   // Number of nodes
 	size_t               CountEdges() const;   // Number of directed edges

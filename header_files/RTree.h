@@ -9,7 +9,8 @@ class RTree
 {
 public:
 	RTree();
-	void AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2);
+	void AddEdge(nodeid_t u, nodeid_t v,
+				 GpsCoordinate p1, GpsCoordinate p2);
 
 private:
 	class LineSegment
@@ -17,16 +18,15 @@ private:
 	public:
 		LineSegment(nodeid_t a, nodeid_t b);
 
-		nodeid_t a;   // node ID a
-		nodeid_t b;   // node ID b
+		nodeid_t a;
+		nodeid_t b;
 	};
 
 	class Rectangle
 	{
 	public:
-		Rectangle();
-		Rectangle(GpsCoordinate p1,
-				  GpsCoordinate p2);   // Rectangle that bounds edge a---b
+		Rectangle() = default;
+		Rectangle(GpsCoordinate p1, GpsCoordinate p2);   // Rectangle that bounds edge a---b
 
 		GpsCoordinate p1;
 		GpsCoordinate p2;
@@ -49,32 +49,44 @@ private:
 	class Node
 	{
 	public:
-		Node();
-		virtual Leaf& ChooseLeaf(const Rectangle& entry_r) = 0;   // this makes the Node class Abstract
+		virtual Leaf& ChooseLeaf(const Rectangle& entry_r) = 0;   // pure virtual
+		virtual void  SplitNode(const RTree::Rectangle& entry_r,
+								const RTree&            rtree)        = 0;   // pure virtual
 
-		Rectangle r;
-	};
+		Rectangle        r;
+		unique_ptr<Node> parent;
 
-	class Leaf : public Node
-	{
-	public:
-		Leaf();
-		Leaf& ChooseLeaf(const Rectangle& entry_r) override;
-
-		vector<unique_ptr<IndexEntry>> entries;
+	protected:
+		template<typename T>
+		void DoSplitNode(vector<unique_ptr<T>>&  children_or_entries,
+						 const RTree::Rectangle& entry_r,
+						 const RTree&            rtree);   // helper function
 	};
 
 	class NonLeaf : public Node
 	{
 	public:
-		NonLeaf();
+		NonLeaf() = default;
 		Leaf& ChooseLeaf(const Rectangle& entry_r) override;
+		void  SplitNode(const RTree::Rectangle& entry_r,
+						const RTree&            rtree) override;
 
 		vector<unique_ptr<Node>> children;
 	};
 
-	const nodeid_t m = 4;   // m <= M/2
-	const nodeid_t M = 8;
+	class Leaf : public Node
+	{
+	public:
+		Leaf() = default;
+		Leaf& ChooseLeaf(const Rectangle& entry_r) override;
+		void  SplitNode(const RTree::Rectangle& entry_r,
+						const RTree&            rtree) override;
+
+		vector<unique_ptr<IndexEntry>> entries;
+	};
+
+	const int m = 4;   // m <= M/2
+	const int M = 8;
 
 	unique_ptr<Node> root;
 };

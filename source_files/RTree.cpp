@@ -7,18 +7,28 @@ RTree::RTree() :
 
 void RTree::AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2)
 {
+	Rectangle entry_r(p1, p2);
+
 	// ChooseLeaf
-	Leaf& chosen_leaf = root->ChooseLeaf(Rectangle(p1, p2));
+	Leaf& chosen_leaf = root->ChooseLeaf(entry_r);
 
 	// Add a new Index Entry to the chosen leaf
 	chosen_leaf.entries.emplace_back(new IndexEntry(Rectangle(p1, p2),
 													LineSegment(u, v)));
 
 	// SplitNodes - Quadratic-cost Algorithm
+	chosen_leaf.SplitNode(entry_r, *this);
+}
+
+template<typename T>
+void RTree::Node::DoSplitNode(vector<unique_ptr<T>>&  children_or_entries,
+							  const RTree::Rectangle& entry_r,
+							  const RTree&            rtree)
+{
 	// If the chosen leaf's size becomes M + 1 after the insertion, then we need to split it.
-	vector<unique_ptr<IndexEntry>> group_1;
-	vector<unique_ptr<IndexEntry>> group_2;
-	if (chosen_leaf.entries.size() > M)
+	vector<unique_ptr<T>> group_1;
+	vector<unique_ptr<T>> group_2;
+	if (children_or_entries.size() > rtree.M)
 	{
 		// PickSeeds
 		// Select the two nodes that would waste the most area, if they were put in the same group.
@@ -26,12 +36,12 @@ void RTree::AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2)
 		double max_d        = 0;
 		int    seed_1_index = -1;
 		int    seed_2_index = -1;
-		for (int i = 0; i < M + 1; ++i)
+		for (int i = 0; i < rtree.M + 1; ++i)
 		{
-			for (int j = i + 1; j < M + 1; ++j)
+			for (int j = i + 1; j < rtree.M + 1; ++j)
 			{
-				const Rectangle& r1 = chosen_leaf.entries[i]->r;
-				const Rectangle& r2 = chosen_leaf.entries[j]->r;
+				const Rectangle& r1 = children_or_entries[i]->r;
+				const Rectangle& r2 = children_or_entries[j]->r;
 				const double     d  = r1.Expand(r2).ComputeArea() - r1.ComputeArea() - r2.ComputeArea();
 				if (d > max_d)
 				{
@@ -41,10 +51,10 @@ void RTree::AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2)
 				}
 			}
 		}
-		group_1.emplace_back(std::move(chosen_leaf.entries[seed_1_index]));   // move seed 1 to group 1
-		group_2.emplace_back(std::move(chosen_leaf.entries[seed_2_index]));   // move seed 2 to group 2
+		group_1.emplace_back(std::move(children_or_entries[seed_1_index]));   // move seed 1 to group 1
+		group_2.emplace_back(std::move(children_or_entries[seed_2_index]));   // move seed 2 to group 2
 		// Erase Null pointers
-		Util::EraseVecIndices<unique_ptr<IndexEntry>>(chosen_leaf.entries, {seed_1_index, seed_2_index});
+		Util::EraseVecIndices<unique_ptr<T>>(children_or_entries, {seed_1_index, seed_2_index});
 
 		// Initialize the rectangles for the groups
 		Rectangle r_group_1 = group_1[0]->r;
@@ -54,27 +64,27 @@ void RTree::AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2)
 		while (true)
 		{
 			// No more nodes left to choose from
-			if (chosen_leaf.entries.empty())
+			if (children_or_entries.empty())
 			{
 				break;
 			}
 			// We need to ensure that the groups have a minimum of m nodes.
-			if (Util::min(group_1.size(), group_2.size()) + chosen_leaf.entries.size() == m)
+			if (Util::min(group_1.size(), group_2.size()) + children_or_entries.size() == rtree.m)
 			{
 				auto& smallest_group = group_1.size() < group_2.size() ? group_1 : group_2;
-				Util::MoveVecPtr(chosen_leaf.entries, smallest_group);
+				Util::MoveVecPtr(children_or_entries, smallest_group);
 				break;
 			}
 
-			double max_d          = 0;
-			int    chosen_i       = 0;
-			bool   chosen_group_1 = true;
-			for (int i = 0; i < chosen_leaf.entries.size(); ++i)
+			max_d               = 0;
+			int  chosen_i       = 0;
+			bool chosen_group_1 = true;
+			for (int i = 0; i < children_or_entries.size(); ++i)
 			{
-				const Rectangle& r      = chosen_leaf.entries[i]->r;
-				const double     r_area = r.ComputeArea();
-				const double     d1     = r_group_1.Expand(r).ComputeArea() - r_area;
-				const double     d2     = r_group_2.Expand(r).ComputeArea() - r_area;
+				const Rectangle& rec    = children_or_entries[i]->r;
+				const double     r_area = rec.ComputeArea();
+				const double     d1     = r_group_1.Expand(rec).ComputeArea() - r_area;
+				const double     d2     = r_group_2.Expand(rec).ComputeArea() - r_area;
 				double           d      = fabs(d1 - d2);
 				if (d > max_d)
 				{
@@ -83,15 +93,28 @@ void RTree::AddEdge(nodeid_t u, nodeid_t v, GpsCoordinate p1, GpsCoordinate p2)
 					chosen_group_1 = d1 < d2;
 				}
 			}
-			Util::MovePtr<IndexEntry>(chosen_leaf.entries,
-									  chosen_i,
-									  chosen_group_1 ? group_1 : group_2);
+			Util::MovePtr<T>(children_or_entries,
+							 chosen_i,
+							 chosen_group_1 ? group_1 : group_2);
 		}
 	}
+
+	parent->SplitNode();
+}
+
+void RTree::Leaf::SplitNode(const RTree::Rectangle& entry_r, const RTree& rtree)
+{
+	DoSplitNode(this->entries, entry_r, rtree);
+}
+
+void RTree::NonLeaf::SplitNode(const RTree::Rectangle& entry_r, const RTree& rtree)
+{
+	DoSplitNode(this->children, entry_r, rtree);
 }
 
 RTree::Leaf& RTree::Leaf::ChooseLeaf(const Rectangle& entry_r)
 {
+	parent->ChooseLeaf(Rectangle());
 	return *this;
 }
 
@@ -112,40 +135,15 @@ RTree::Leaf& RTree::NonLeaf::ChooseLeaf(const Rectangle& entry_r)
 	return children[min_i]->ChooseLeaf(entry_r);
 }
 
-RTree::Node::Node() :
-	r(GpsCoordinate(0, 0),
-	  GpsCoordinate(0, 0))
-{
-}
-
-RTree::Leaf::Leaf() :
-	Node(),
-	entries()
-{
-}
-
-RTree::NonLeaf::NonLeaf() :
-	Node(),
-	children()
-{
-}
+// RTree::Leaf::Leaf() :
+//	Node(),
+//	entries()
+//{
+// }
 
 RTree::LineSegment::LineSegment(nodeid_t a, nodeid_t b) :
 	a(a),
 	b(b)
-{
-}
-
-RTree::IndexEntry::IndexEntry(RTree::Rectangle   r,
-							  RTree::LineSegment l) :
-	r(r),
-	l(l)
-{
-}
-
-RTree::Rectangle::Rectangle() :
-	p1(GpsCoordinate(0, 0)),
-	p2(GpsCoordinate(0, 0))
 {
 }
 
@@ -168,4 +166,11 @@ double RTree::Rectangle::ComputeArea() const
 	const double W = p2.GetLat() - p1.GetLat();
 	const double L = p2.GetLng() - p1.GetLng();
 	return W * L;
+}
+
+RTree::IndexEntry::IndexEntry(RTree::Rectangle   r,
+							  RTree::LineSegment l) :
+	r(r),
+	l(l)
+{
 }

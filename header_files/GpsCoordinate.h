@@ -15,6 +15,7 @@ using namespace std;
 class GpsCoordinate
 {
 public:
+	GpsCoordinate() = default;
 	GpsCoordinate(const double& lat, const double& lng);
 	~GpsCoordinate() = default;
 
