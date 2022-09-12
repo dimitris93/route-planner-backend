@@ -1,25 +1,13 @@
-#include "RoutePlanner.h"
+#include "Route.h"
 #include <functional>
 #include <queue>
 #include <unordered_map>
 
-Route::Route() :
-	nodeid_sequence(),
-	sum_weight(numeric_limits<float>::max())
-{
-}
-
-Route::Route(vector<nodeid_t> nodeid_sequence,
-			 float            cost) :
-	nodeid_sequence(std::move(nodeid_sequence)),
-	sum_weight(cost)
-{
-}
-
-Route RoutePlanner::plan_route(nodeid_t     s,
-							   nodeid_t     t,
-							   const Graph& G,
-							   Algorithm    algorithm)
+Route::Route(const Graph&     G,
+			 nodeid_t         s,
+			 nodeid_t         t,
+			 Route::Algorithm algorithm) :
+	algorithm(algorithm)
 {
 	switch (algorithm)
 	{
@@ -27,11 +15,11 @@ Route RoutePlanner::plan_route(nodeid_t     s,
 		{
 			unordered_map<nodeid_t, float>    dist;   // dist[u] 'will be' the distance of the shortest s->u path
 			unordered_map<nodeid_t, nodeid_t> prev;   // prev[x] 'will be' the node before x in the shortest s->u path, via x
-			using ui_f = pair<nodeid_t, float>;
-			priority_queue<ui_f,
-						   vector<ui_f>,
-						   function<bool(const ui_f&, const ui_f&)>>
-					pq([&](const ui_f& p1, const ui_f& p2) {
+			using id_w_pair = pair<nodeid_t, float>;
+			priority_queue<id_w_pair,
+						   vector<id_w_pair>,
+						   function<bool(const id_w_pair&, const id_w_pair&)>>
+					pq([&](const id_w_pair& p1, const id_w_pair& p2) {
 						return p1.second > p2.second;
 					});
 
@@ -63,7 +51,7 @@ Route RoutePlanner::plan_route(nodeid_t     s,
 				{
 					const float len           = dist[u] + e.w;
 					const auto  find_dist_e_v = dist.find(e.v);
-					// If dist[v] is Infinite, or dist[u] + e.w < dist[e.v]
+					// If dist[e.v] is Infinite, or dist[u] + e.w < dist[e.v]
 					if (find_dist_e_v == dist.end() || len < find_dist_e_v->second)
 					{
 						// "Relax" edge e.v (relax is a term that is often used in explaining Dijkstra's algorithm)
@@ -78,7 +66,7 @@ Route RoutePlanner::plan_route(nodeid_t     s,
 			const auto& find_t = dist.find(t);
 			if (find_t == dist.end())
 			{
-				return {};   // no route
+				break;   // no route
 			}
 
 			// Calculate the path vector
@@ -92,7 +80,8 @@ Route RoutePlanner::plan_route(nodeid_t     s,
 			shortest_path.push_back(s);                            // add first node
 			reverse(shortest_path.begin(), shortest_path.end());   // reverse the vector
 
-			return {shortest_path, dist[t]};
+			nodeid_sequence = shortest_path;
+			sum_weight      = dist[t];
 		}
 		case Bidirectional_Dijkstra:
 		{
@@ -141,7 +130,7 @@ Route RoutePlanner::plan_route(nodeid_t     s,
 					pq2.pop();   // delete if node was added more than once (value not up-to-date)
 				}
 
-				// Terminate condition. A s->t path shorter than best_dist could not have existed beyond this point.
+				// Terminate condition. An s->t path shorter than best_dist could not have existed beyond this point.
 				if (pq.empty() ||
 					pq2.empty() ||
 					dist[pq.top().first] + dist2[pq2.top().first] >= best_dist)
@@ -213,7 +202,7 @@ Route RoutePlanner::plan_route(nodeid_t     s,
 			// If there is no s->t path
 			if (common_node == -1)
 			{
-				return {};
+				break;
 			}
 
 			vector<nodeid_t> shortest_path;
@@ -242,7 +231,8 @@ Route RoutePlanner::plan_route(nodeid_t     s,
 				} while (p != t);
 			}
 
-			return {shortest_path, best_dist};
+			nodeid_sequence = shortest_path;
+			sum_weight      = best_dist;
 		}
 	}
 }

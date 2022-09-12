@@ -24,7 +24,7 @@ double GpsCoordinate::GetLng() const
 	return lng_int * INT_TO_COORDINATE;
 }
 
-GpsCoordinate GpsCoordinate::ClosestPointToLineSegment(const GpsCoordinate& p,
+GpsCoordinate GpsCoordinate::ClosestPointToLineSegment(const GpsCoordinate& P,
 													   const GpsCoordinate& A,
 													   const GpsCoordinate& B)
 {
@@ -41,18 +41,18 @@ GpsCoordinate GpsCoordinate::ClosestPointToLineSegment(const GpsCoordinate& p,
 	const double xb = B.GetLat();
 	const double yb = B.GetLng();
 
-	const double xp = p.GetLat();
-	const double yp = p.GetLng();
+	const double xp = P.GetLat();
+	const double yp = P.GetLng();
 
-	const double ap_vec_x = xp - xa;
-	const double ap_vec_y = yp - ya;
+	const double x_ap = xp - xa;
+	const double y_ap = yp - ya;
 
-	const double ab_vec_x = xb - xa;
-	const double ab_vec_y = yb - ya;
+	const double x_ab = xb - xa;
+	const double y_ab = yb - ya;
 
-	const double ap_dot_ab = ap_vec_x * ab_vec_x + ap_vec_y * ab_vec_y;
-	const double ab_dob_ab = ab_vec_x * ab_vec_x + ab_vec_y * ab_vec_y;
-	const double ratio     = ap_dot_ab / ab_dob_ab;
+	const double ap_dot_ab = x_ap * x_ab + y_ap * y_ab;
+	const double ab_dot_ab = x_ab * x_ab + y_ab * y_ab;
+	const double ratio     = ap_dot_ab / ab_dot_ab;
 
 	if (ratio < 0)
 	{

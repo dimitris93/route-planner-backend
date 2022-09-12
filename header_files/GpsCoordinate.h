@@ -21,7 +21,7 @@ public:
 
 	double               GetLat() const;                                     // Actual Latitude value as double
 	double               GetLng() const;                                     // Actual Longitude value as double
-	static GpsCoordinate ClosestPointToLineSegment(const GpsCoordinate& p,   // Project point to road segment.
+	static GpsCoordinate ClosestPointToLineSegment(const GpsCoordinate& P,   // Project point to road segment.
 												   const GpsCoordinate& A,   // Returns the projected point
 												   const GpsCoordinate& B);
 	static double        DistanceInMeters(const double& lat1,

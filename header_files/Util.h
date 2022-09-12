@@ -9,6 +9,7 @@ typedef unsigned int subgraphid_t;
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -52,8 +53,8 @@ public:
 	//			vec_from.erase(vec_from.begin() + i);
 	//		}
 	//	}
-	template<typename T> static void MoveVecPtr(vector<unique_ptr<T>>& vec_from,   // Move all pointers from one vector, to another
-												vector<unique_ptr<T>>& vec_to)
+	template<typename T> static void MovePtr(vector<unique_ptr<T>>& vec_from,   // Move all pointers from one vector, to another
+											 vector<unique_ptr<T>>& vec_to)
 	{
 		vec_to.reserve(vec_from.size() + vec_to.size());
 		std::move(vec_from.begin(), vec_from.end(), std::back_inserter(vec_to));
